@@ -1,0 +1,848 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "CodesWear",
+    "contact": {},
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000/codeswear",
+      "variables": {}
+    }
+  ],
+  "paths": {
+    "/auth/signup": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Signup",
+        "operationId": "Signup",
+        "parameters": [],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/SignupRequest"
+                  },
+                  {
+                    "example": {
+                      "name": "aaa",
+                      "email": "aaa@gmail.com",
+                      "password": "aaa123",
+                      "cpassword": "aaa123",
+                      "mobile": "1234567890",
+                      "role": "Admin"
+                    }
+                  }
+                ]
+              },
+              "example": {
+                "name": "aaa",
+                "email": "aaa@gmail.com",
+                "password": "aaa123",
+                "cpassword": "aaa123",
+                "mobile": "1234567890",
+                "role": "Admin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Login",
+        "operationId": "Login",
+        "parameters": [],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/LoginRequest"
+                  },
+                  {
+                    "example": {
+                      "email": "aaa@gmail.com",
+                      "password": "aaa123"
+                    }
+                  }
+                ]
+              },
+              "example": {
+                "email": "aaa@gmail.com",
+                "password": "aaa123"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/auth/emailverify": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Email Verify",
+        "operationId": "EmailVerify",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/auth/otpverify": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Otp Verify",
+        "operationId": "OtpVerify",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/auth/forgotpassword": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Forgot Password",
+        "operationId": "ForgotPassword",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/user/getuser/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Find Details",
+        "operationId": "FindDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/user/updateprofile/{id}": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update Profile",
+        "operationId": "UpdateProfile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/user/getallproduct": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get All Product",
+        "operationId": "GetAllProduct",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/user/tshirts": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "T-Shirts",
+        "operationId": "T-Shirts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/user/hoodies": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Hoodies",
+        "operationId": "Hoodies",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/user/stickers": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Stickers",
+        "operationId": "Stickers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/user/mugs": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Mugs",
+        "operationId": "Mugs",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/user/updateuserpassword/{id}": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update User Password",
+        "operationId": "UpdateUserPassword",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/user/addproduct": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Add Product",
+        "operationId": "AddProduct",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/user/getusercart/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "UserCart",
+        "operationId": "UserCart",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/user/updatecart": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "UpdateCart",
+        "operationId": "UpdateCart",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/admin/getadmin/{adminId}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get Admin",
+        "operationId": "GetAdmin",
+        "parameters": [
+          {
+            "name": "adminId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string",
+              "example": "A1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/admin/updateadminprofile/{adminId}": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Update Admin",
+        "operationId": "UpdateAdmin",
+        "parameters": [
+          {
+            "name": "adminId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/admin/updatepassword/{adminId}": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Update Admin Password",
+        "operationId": "UpdateAdminPassword",
+        "parameters": [
+          {
+            "name": "adminId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/admin/getalluser": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get All User",
+        "operationId": "GetAllUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/admin/getId/{userId}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get User Id",
+        "operationId": "GetUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/admin/adduser": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Add User",
+        "operationId": "AddUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/admin/updateuser/{userId}": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Update User",
+        "operationId": "UpdateUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/admin/deleteuser/{userId}": {
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Delete User",
+        "operationId": "DeleteUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/admin/getallproduct": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get All Product",
+        "operationId": "GetAllProduct1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false,
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/admin/getproductid/{productId}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Get Product by Id",
+        "operationId": "GetProductbyId",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/admin/addproduct": {
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Add Product",
+        "operationId": "PostAddProduct",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/admin/updateproduct/{productId}": {
+      "patch": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Update Product",
+        "operationId": "UpdateProduct",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/admin/deleteproduct/{productId}": {
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Delete Product",
+        "operationId": "DeleteProduct",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/admin/getallbuyproduct": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "All Orders",
+        "operationId": "AllOrders",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/admin/deliverproduct/{productId}": {
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Deliver Product",
+        "operationId": "DeliverProduct",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SignupRequest": {
+        "title": "SignupRequest",
+        "required": [
+          "name",
+          "email",
+          "password",
+          "cpassword",
+          "mobile",
+          "role"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "cpassword": {
+            "type": "string"
+          },
+          "mobile": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "name": "aaa",
+          "email": "aaa@gmail.com",
+          "password": "aaa123",
+          "cpassword": "aaa123",
+          "mobile": "1234567890",
+          "role": "Admin"
+        }
+      },
+      "LoginRequest": {
+        "title": "LoginRequest",
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "email": "aaa@gmail.com",
+          "password": "aaa123"
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "security": [],
+  "tags": [
+    {
+      "name": "Auth"
+    },
+    {
+      "name": "User"
+    },
+    {
+      "name": "Admin"
+    }
+  ]
+}
