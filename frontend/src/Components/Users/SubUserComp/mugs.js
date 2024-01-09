@@ -84,7 +84,7 @@ const Mugs = () => {
                 </Modal.Header>
                 <Modal.Body className='flex justify-between space-x-3'>
                   <div className='w-1/2'>
-                    <img src={product.productUrl} alt="" />
+                    <img src={`http://localhost:4000/image/uploads/${product.productUrl}`} alt="" />
                   </div>
                   <div className='w-1/2'>
                     <p className='fw-semibold'>Product Name : </p><p> {product.productName}</p>
@@ -106,7 +106,7 @@ const Mugs = () => {
                   return <div className='w-25 p-3 product-info'>
                     <div className="p-2 cursor-pointer  shadow-lg h-100">
                       <a className="block relative  rounded overflow-hidden">
-                        <img alt="ecommerce" className="m-auto md:m-0 h-[20vh]  block" src={x.productUrl} />
+                        <img alt="ecommerce" className="m-auto md:m-0 h-[20vh]  block" src={`http://localhost:4000/image/uploads/${x.productUrl}`} />
                       </a>
                       <div className="mt-4 text-center md:text-left">
                         <h3 className="text-gray-500 text-xs tracking-widest title-font mb-1">{x.productType}</h3>

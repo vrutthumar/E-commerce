@@ -109,7 +109,7 @@ const getAllProuct = async (req, res) => {
 
 const addProduct = async (req, res) => {
     try {
-        const allproducts = await products.find({ })
+        const allproducts = await products.find()
         const newID = users.length == 0 ? 1 : Number(allproducts[allproducts.length - 1].productId.split('P')[1]) + 1
         const data = {
             ...req.body,

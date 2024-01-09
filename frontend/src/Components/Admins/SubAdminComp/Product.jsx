@@ -11,6 +11,7 @@ const Product = () => {
 
     const [show, setShow] = useState(false);
     const [img, setImg] = useState('');
+    let [diaplayimg, setdiaplayImg] = useState('');
 
     const [showimg, setShowImg] = useState(false);
     const [blank, setbalnk] = useState({})
@@ -19,6 +20,7 @@ const Product = () => {
 
     const handleClose = () => {
         setproductObj({ ...blank })
+        setdiaplayImg('')
         setShow(false)
     };
     const handleShow = () => setShow(true);
@@ -37,11 +39,31 @@ const Product = () => {
             Authorization: `Bearer ${token}`
         }
     }
+    const productData = async (e) => {
+        if (e.target.type == "file") {
+            productObj[e.target.name] = e.target.files[0]
+            setdiaplayImg(await toBase64(e.target.files?.[0]))
+        }
+        else {
+            productObj[e.target.name] = e.target.value
+
+        }
+        setproductObj({ ...productObj })
+    }
+
+    const toBase64 = (file) =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+        });
+
 
     const save = () => {
         let formData = new FormData()
-        for(let key in productObj){
-            formData.append(key , productObj[key])
+        for (let key in productObj) {
+            formData.append(key, productObj[key])
         }
         if (productObj.productId == undefined) {
 
@@ -52,6 +74,8 @@ const Product = () => {
                     toast.success(res.data.message)
                     getAll();
                     setproductObj({ ...blank })
+                    setdiaplayImg('')
+
                 }
                 else {
                     toast.error(res.data.message)
@@ -67,6 +91,8 @@ const Product = () => {
                     toast.success(res.data.message)
                     getAll();
                     setproductObj({ ...blank })
+                    setdiaplayImg('')
+
                 }
                 else {
                     toast.error(res.data.message)
@@ -94,6 +120,7 @@ const Product = () => {
         axios.get(`http://localhost:4000/codeswear/admin/getproductid/${id}`, auth).then(res => {
             if (res.data.success) {
                 setproductObj({ ...res.data.data })
+                setdiaplayImg(`http://localhost:4000/image/uploads/${res.data.data.productUrl}`)
 
 
             }
@@ -138,10 +165,7 @@ const Product = () => {
         getAll();
     }, [])
 
-    const productData = (e) => {
-        productObj[e.target.name] = e.target.value
-        setproductObj({ ...productObj })
-    }
+
 
 
 
@@ -176,7 +200,7 @@ const Product = () => {
                                     <Form.Control type="text" name='productName' onChange={productData} value={productObj.productName ?? ""} />
 
                                     <Form.Label className='d-block fw-bold mt-2'>Product Url</Form.Label>
-                                    <Form.Control type="file" name='productUrl' onChange={productData}  />
+                                    <Form.Control type="file" name='productUrl' onChange={productData} />
 
                                     <Form.Label className='d-block fw-bold mt-2'>Product Type </Form.Label>
                                     <Form.Check inline type="radio" label="T-Shirt" value="T-Shirt" checked={productObj?.productType == "T-Shirt"} name='productType' onChange={productData} />
@@ -191,7 +215,7 @@ const Product = () => {
                                     <Form.Control type="text" name='discription' onChange={productData} value={productObj.discription ?? ""} />
 
                                     <div className='mt-2'>
-                                        <img src={productObj.productUrl} alt="" style={{ height: "auto", maxHeight: "150px" }} />
+                                        <img src={diaplayimg} alt="" style={{ height: "auto", maxHeight: "150px" }} />
                                     </div>
 
                                 </Modal.Body>
