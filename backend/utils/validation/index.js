@@ -2,4 +2,4 @@ const {user , login ,emailVerify, otpverify,forgotPassword} = require('./userVal
 const {product} = require('./productValidation')
 
 
-module.exports = {user , login ,emailVerify, otpverify,forgotPassword}
+module.exports = {user , login ,emailVerify, otpverify,forgotPassword,product}
