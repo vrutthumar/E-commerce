@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer");
 const users = require('../Model/usersSchema');
 const products = require('../Model/productSchema');
 const buyproducts = require('../Model/buyproductSchema');
-
+const fs = require('fs')
 
 var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -140,12 +140,15 @@ const updateProduct = async (req, res) => {
         return res.status(200).json({ success: true, data: update, message: 'Product Updated' });
     } catch (error) {
         console.log(error);
+        fs.unlinkSync(`./public/uploads/${req.body.productUrl}`)
         return res.status(200).json({ success: false, data: [], message: 'Intertal Server Error' });
     }
 }
 
 const deleteProduct = async (req, res) => {
     try {
+        const product = await products.findOne({ "productId": req.params.id }) 
+        const img = fs.unlinkSync(`./public/uploads/${product.productUrl}`)
         const data1 = await products.deleteOne({ "productId": req.params.id })
         return res.status(200).json({ success: true, data: data1, message: 'Product Deleted' });
     } catch (error) {
