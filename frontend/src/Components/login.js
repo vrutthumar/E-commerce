@@ -18,14 +18,13 @@ const Login = (props) => {
 
     console.log(props.role)
     const login = (e) => {
-        loginObj['role']  = props.role
-        setloginObj({...loginObj})
+        loginObj['role'] = props.role
+        setloginObj({ ...loginObj })
         e.preventDefault();
         axios.post(`http://localhost:4000/codeswear/auth/login`, loginObj).then(response => {
             if (response.data.success) {
                 e.target.reset()
                 toast.success(response.data.message)
-                console.log(response.data.data)
                 localStorage.setItem('isLogin', true)
                 localStorage.setItem('token', JSON.stringify(response.data.token))
                 localStorage.setItem('loginId', JSON.stringify(response.data.data.Id))
@@ -47,8 +46,8 @@ const Login = (props) => {
             <Form.Label className='fw-bold mt-2'>Password</Form.Label>
             <Form.Control type="password" name="password" onChange={loginData} />
             <div className='flex items-center justify-between'>
-            <button className='primary-btn mt-3' type='submit'>Login</button>
-            <NavLink to='/forgotpassword'>Forgot Password</NavLink>
+                <button className='primary-btn mt-3' type='submit'>Login</button>
+                <NavLink to='/forgotpassword'>Forgot Password</NavLink>
 
             </div>
 

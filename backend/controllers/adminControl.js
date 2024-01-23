@@ -118,6 +118,7 @@ const addProduct = async (req, res) => {
         const productdata = await products.create(data)
         return res.status(200).json({ success: true, data: productdata, message: 'Product Added' });
     } catch (error) {
+        fs.unlinkSync(`./public/uploads/${req.body.productUrl}`)
         console.log(error);
     }
 }
@@ -224,7 +225,7 @@ const getId = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const update = await users.findOneAndUpdate({ Id: req.params.id }, { $set: req.body })
-        return res.status(200).json({ success: true, data: data1, message: 'Product Updated' });
+        return res.status(200).json({ success: true, data: update, message: 'Product Updated' });
     } catch (error) {
         return res.status(200).json({ success: false, data: [], message: 'Intertal Server Error' });
         console.log(error);

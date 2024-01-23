@@ -3,10 +3,10 @@ import { Form, Table } from 'react-bootstrap'
 import axios from 'axios'
 import { BsPersonCircle } from "react-icons/bs"
 import Swal from 'sweetalert2'
-import { MainUser } from '../MainUser'
-import { Context } from '../../../App'
+import { MainUser } from './MainUser'
+import { Context } from '../../App'
 import toast from 'react-hot-toast'
-import Loading from '../../Loading'
+import Loading from '../Loading'
 
 
 function UserProfile() {
@@ -166,6 +166,10 @@ function UserProfile() {
                                                 <tr>
                                                     <td className='d-flex justify-content-between'><span className='text-white border-0 bg-transparent'>Role</span><span className='text-white border-0 bg-transparent'>:</span></td>
                                                     <td className='text-white border-0'>{profileObj.role}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className='d-flex justify-content-between'><span className='text-white border-0 bg-transparent'>Refral Code</span><span className='text-white border-0 bg-transparent'>:</span></td>
+                                                    <td className='text-white border-0 fw-bold'>{profileObj.refralCode}</td>
                                                 </tr>
 
                                                 <tr>

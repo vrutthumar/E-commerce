@@ -20,50 +20,66 @@ const otpGeneraor = () => {
     return Number(otp)
 }
 
+const refrelCodeGenerator = async () => {
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+    let refCode = ""
+    for (let i = 0; i < 6; ++i) {
+        refCode += charset.charAt(Math.floor(Math.random() * charset.length)).toUpperCase();
+    }
+    let allRefrerId = await users.find()
+    allRefrerId = allRefrerId.map(x => x.refralCode)
+    if (allRefrerId.length != 0 || allRefrerId.filter(x => x == refCode).length == 0) {
+        return refCode
+    }
+    else {
+        refrelCodeGenerator()
+    }
+
+}
 const signUp = async (req, res) => {
     try {
+        const loginData = await users.findOne({ "email": req.body.email, "role": req.body.role })
+        if (!loginData) {
+            if (req.body.password == req.body.cpassword) {
+                const allUsers = await users.find({ role: req.body.role })
+                const newID = allUsers.length == 0 ? 1 : Number(allUsers[allUsers.length - 1].Id.split(req.body.role == "Admin" ? "A" : "U")[1]) + 1
+                const data = {
+                    ...req.body,
+                    Id: `${req.body.role == "Admin" ? "A" : "U"}${newID}`,
+                    password: await bcrypt.hash(req.body.password, 1),
+                    refralCode: `${req.body.role == "User" ? await refrelCodeGenerator() : ""}`
+                }
+                const token = jwt.sign({
+                    email: data.email,
+                    role: data.role
+                }, process.env.SECRET_KEY, { expiresIn: '1h' });
+                const data1 = await users.create(data)
+                var mailOptions = {
+                    from: 'vrutthumar12@gmail.com',
+                    to: req.body.email,
+                    subject: 'Register To Codeswear.com',
+                    html: `<div>Welcome To CodesWear.com !!!</div> <br> <br> <div>Register Successfully</div>`
 
-        if (req.body.role == "Admin") {
-            const loginData = await users.findOne({ "email": req.body.email , "role" :"admin" })
-            if (!loginData) {
-                if (req.body.password == req.body.cpassword) {
-                    const admins = await users.find({ role: "Admin" })
-                    const newID = admins.length == 0 ? 1 : Number(admins[admins.length - 1].Id.split('A')[1]) + 1
-                    const data = {
-                        ...req.body,
-                        Id: `A${newID}`,
-                        password: await bcrypt.hash(req.body.password, 1)
+                };
+
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        console.log('Email sent: ' + info.response);
                     }
-                    const data1 = await users.create(data)
-                    var mailOptions = {
-                        from: 'vrutthumar12@gmail.com',
-                        to: req.body.email,
-                        subject: 'Register To Codeswear.com',
-                        html: `<div>Welcome To CodesWear.com !!!</div> <br> <br> <div>Register Successfully</div>`
-
-                    };
-
-                    transporter.sendMail(mailOptions, function (error, info) {
-                        if (error) {
-                            console.log(error);
-                        } else {
-                            console.log('Email sent: ' + info.response);
-                        }
-                    });
-                    return res.status(200).json({ success: true, data: data1, message: 'New Admin Registered Successfully' });
-                }
-                else {
-                    return res.status(200).json({ success: false, data: [], message: 'Password And Confirm Password Should Match' });
-
-                }
-            } else {
-                return res.status(200).json({ success: false, data: [], message: 'Email Already Exists' });
+                });
+                return res.status(200).json({ success: true, data: data1, token, message: `New ${req.body.role} Registered Successfully` });
+            }
+            else {
+                return res.status(200).json({ success: false, data: [], message: 'Password And Confirm Password Should Match' });
 
             }
         } else {
-            return res.status(200).json({ success: false, data: [], message: 'User Are Not Allowed To Signup' });
+            return res.status(200).json({ success: false, data: [], message: 'Email Already Exists' });
 
         }
+
     } catch (error) {
         console.log(error);
     }
@@ -72,7 +88,7 @@ const signUp = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        let data = await users.findOne({ "email": req.body.email , "role" : req.body.role })
+        let data = await users.findOne({ "email": req.body.email, "role": req.body.role })
         if (data) {
             if (await bcrypt.compare(req.body.password, data.password)) {
                 const token = jwt.sign({
