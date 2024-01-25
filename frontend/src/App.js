@@ -18,6 +18,7 @@ import AllProducts from './Components/Users/SubUserComp/AllProducts';
 import User from './Components/Admins/SubAdminComp/User';
 import BuyProduct from './Components/Admins/SubAdminComp/BuyProduct';
 import Cart from './Components/Users/Cart';
+import Wallet from './Components/Admins/SubAdminComp/Wallet';
 
 
 export let Context = createContext()
@@ -44,6 +45,7 @@ function App() {
                       <Route path='/product' element={<Product />} />
                       <Route path='/users' element={<User />} />
                       <Route path='/buyproducts' element={<BuyProduct />} />
+                      <Route path='/walletInfo' element={<Wallet />} />
                     </>
                     :
                     <>

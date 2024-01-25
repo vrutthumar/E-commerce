@@ -3,7 +3,8 @@ const nodemailer = require("nodemailer");
 const users = require('../Model/usersSchema');
 const products = require('../Model/productSchema');
 const buyproducts = require('../Model/buyproductSchema');
-const fs = require('fs')
+const fs = require('fs');
+const transaction = require('../Model/transactionSchema');
 
 var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -85,7 +86,7 @@ const getAllBuyProduct = async (req, res) => {
 
 const deliverProduct = async (req, res) => {
     try {
-        
+
         const data1 = await buyproducts.deleteOne({ "productId": req.params.id })
 
         return res.status(200).json({ success: true, data: data1, message: 'Product Send For Delivery' });
@@ -148,7 +149,7 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     try {
-        const product = await products.findOne({ "productId": req.params.id }) 
+        const product = await products.findOne({ "productId": req.params.id })
         const img = fs.unlinkSync(`./public/uploads/${product.productUrl}`)
         const data1 = await products.deleteOne({ "productId": req.params.id })
         return res.status(200).json({ success: true, data: data1, message: 'Product Deleted' });
@@ -242,5 +243,17 @@ const deleteUser = async (req, res) => {
     }
 }
 
+// Wallet Info
 
-module.exports = { findAdminDetails, updateAdminProfile, updateAdminPassword, getAllUser, addUser, getId, updateUser, deleteUser, getAllProuct, addProduct, updateProduct, deleteProduct, getproductID, getAllBuyProduct, deliverProduct };
+const walletInfo = async (req, res) => {
+    try {
+        const data1 = await transaction.find()
+        return res.status(200).json({ success: true, data: data1, message: 'User Deleted' });
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json({ success: false, data: [], message: 'Intertal Server Error' });
+    }
+}
+
+
+module.exports = { findAdminDetails, updateAdminProfile, updateAdminPassword, getAllUser, addUser, getId, updateUser, deleteUser, getAllProuct, addProduct, updateProduct, deleteProduct, getproductID, getAllBuyProduct, deliverProduct, walletInfo };

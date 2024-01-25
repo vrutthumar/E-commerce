@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Form, Table } from 'react-bootstrap'
+import { Form } from 'react-bootstrap'
 import axios from 'axios'
 import { BsPersonCircle } from "react-icons/bs"
 import Swal from 'sweetalert2'
@@ -17,7 +17,6 @@ function UserProfile() {
     let [updateProfileObj, setupdateProfileObj] = useState({})
 
     let [updatePasswordObj, setupdatePasswordObj] = useState({})
-    let [blankobj, setblankobj] = useState({})
     let [profileObj, setprofileObj] = useState({})
     const token = JSON.parse(localStorage.getItem("token"))
     const loginId = JSON.parse(localStorage.getItem("loginId"))
@@ -167,6 +166,10 @@ function UserProfile() {
                                                 <tr>
                                                     <td className='d-flex justify-content-between'><span className='text-white border-0 bg-transparent'>Role</span><span className='text-white border-0 bg-transparent'>:</span></td>
                                                     <td className='text-white border-0'>{profileObj.role}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className='d-flex justify-content-between'><span className='text-white border-0 bg-transparent'>Refral Code</span><span className='text-white border-0 bg-transparent'>:</span></td>
+                                                    <td className='text-white border-0 fw-bold'>{profileObj.refralCode}</td>
                                                 </tr>
 
                                                 <tr>

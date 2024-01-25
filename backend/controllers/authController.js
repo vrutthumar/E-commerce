@@ -2,6 +2,7 @@ const users = require('../Model/usersSchema');
 const bcrypt = require('bcrypt');
 const nodemailer = require("nodemailer");
 const jwt = require('jsonwebtoken');
+const transaction = require('../Model/transactionSchema');
 
 var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -21,7 +22,7 @@ const otpGeneraor = () => {
 }
 
 const refrelCodeGenerator = async () => {
-    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let refCode = ""
     for (let i = 0; i < 6; ++i) {
         refCode += charset.charAt(Math.floor(Math.random() * charset.length)).toUpperCase();
@@ -38,48 +39,80 @@ const refrelCodeGenerator = async () => {
 }
 const signUp = async (req, res) => {
     try {
-        const loginData = await users.findOne({ "email": req.body.email, "role": req.body.role })
-        if (!loginData) {
-            if (req.body.password == req.body.cpassword) {
-                const allUsers = await users.find({ role: req.body.role })
-                const newID = allUsers.length == 0 ? 1 : Number(allUsers[allUsers.length - 1].Id.split(req.body.role == "Admin" ? "A" : "U")[1]) + 1
-                const data = {
-                    ...req.body,
-                    Id: `${req.body.role == "Admin" ? "A" : "U"}${newID}`,
-                    password: await bcrypt.hash(req.body.password, 1),
-                    refralCode: `${req.body.role == "User" ? await refrelCodeGenerator() : ""}`
-                }
-                const token = jwt.sign({
-                    email: data.email,
-                    role: data.role
-                }, process.env.SECRET_KEY, { expiresIn: '1h' });
-                const data1 = await users.create(data)
-                var mailOptions = {
-                    from: 'vrutthumar12@gmail.com',
-                    to: req.body.email,
-                    subject: 'Register To Codeswear.com',
-                    html: `<div>Welcome To CodesWear.com !!!</div> <br> <br> <div>Register Successfully</div>`
+        if (req.body.role == "Admin" && await users.findOne({ "role": req.body.role })) {
+            console
+            return res.status(200).json({ success: false, data: [], message: `${req.body.role} Already Exists. Contact Adminstrator` });
 
-                };
-
-                transporter.sendMail(mailOptions, function (error, info) {
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        console.log('Email sent: ' + info.response);
-                    }
-                });
-                return res.status(200).json({ success: true, data: data1, token, message: `New ${req.body.role} Registered Successfully` });
-            }
-            else {
-                return res.status(200).json({ success: false, data: [], message: 'Password And Confirm Password Should Match' });
-
-            }
         } else {
-            return res.status(200).json({ success: false, data: [], message: 'Email Already Exists' });
+
+
+            const loginData = await users.findOne({ "email": req.body.email, "role": req.body.role })
+            if (!loginData) {
+                if (req.body.password == req.body.cpassword) {
+                    const allUsers = await users.find({ role: req.body.role })
+                    const newID = allUsers.length == 0 ? 1 : Number(allUsers[allUsers.length - 1].Id.split(req.body.role == "Admin" ? "A" : "U")[1]) + 1
+                    const data = {
+                        ...req.body,
+                        Id: `${req.body.role == "Admin" ? "A" : "U"}${newID}`,
+                        password: await bcrypt.hash(req.body.password, 1),
+                        refralCode: await refrelCodeGenerator(),
+                        refPerson: req.body.refPerson && req.body.refPerson !== "" ? (await users.findOne({ "refralCode": req.body.refPerson })).Id : ""
+                    }
+                    const token = jwt.sign({
+                        email: data.email,
+                        role: data.role
+                    }, process.env.SECRET_KEY, { expiresIn: '1h' });
+                    const data1 = await users.create(data)
+                    const wallet = await transaction.create({
+                        Id: data1.Id,
+                        walletAmount: 100,
+                        transactions: [{ "message": "Joining Bonus", "time": new Date(), "type": "Credited", "amount": 100 }]
+                    })
+                    if (data1.refPerson !== "") {
+                        const walletUpdate = await transaction.findOneAndUpdate(
+                            { Id: data1.refPerson },
+                            {
+                                $inc: { walletAmount: 5 },
+                                $push: {
+                                    transactions: {
+                                        "message": "Referal Bonus", "time": new Date(), "type": "Credited", "amount": 5
+                                    }
+                                }
+                            },
+                            { new: true, upsert: true }
+                        );
+
+
+                    }
+                    var mailOptions = {
+                        from: 'vrutthumar12@gmail.com',
+                        to: req.body.email,
+                        subject: 'Register To Codeswear.com',
+                        html: `<div>Welcome To CodesWear.com !!!</div> <br> <br> <div>Register Successfully</div>`
+
+                    };
+
+
+                    transporter.sendMail(mailOptions, function (error, info) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            console.log('Email sent: ' + info.response);
+                        }
+                    });
+                    return res.status(200).json({ success: true, data: data1, token, message: `New ${req.body.role} Registered Successfully` });
+                }
+                else {
+                    return res.status(200).json({ success: false, data: [], message: 'Password And Confirm Password Should Match' });
+
+                }
+            } else {
+                return res.status(200).json({ success: false, data: [], message: 'Email Already Exists' });
+
+            }
+
 
         }
-
     } catch (error) {
         console.log(error);
     }

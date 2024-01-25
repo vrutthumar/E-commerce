@@ -60,7 +60,7 @@ const Cart = () => {
         buyProductObj["orderType"] = "buy"
         axios.post("http://localhost:4000/codeswear/user/addproduct", buyProductObj, auth).then(response => {
             handleCloseproduct();
-            changeQuantity(-buyProductObj.quantity , product.productId)
+            changeQuantity(-buyProductObj.quantity, product.productId)
             toast.success("Order Placed")
             getUserCart();
         })
@@ -135,7 +135,7 @@ const Cart = () => {
                                                                 </div>
                                                                 <div className='mt-2 flex justify-center items-center space-x-5'>
                                                                     <button className='primary-btn me-1' onClick={() => handleShowProduct(x)}>Buy Now</button>
-                                                                    <RiDeleteBin6Line onClick={() => changeQuantity(-x.quantity,x.productId)} className='text-2xl text-danger' />
+                                                                    <RiDeleteBin6Line onClick={() => changeQuantity(-x.quantity, x.productId)} className='text-2xl text-danger' />
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -145,7 +145,7 @@ const Cart = () => {
                                     }
 
                                 </div>
-                                    <h3 className='text-dark flex space-x-2'><span>Grand Total : </span><span> ₹ {total}</span></h3>
+                                <h3 className='text-dark flex space-x-2'><span>Grand Total : </span><span> ₹ {total}</span></h3>
                             </div>
                         </section>
                     </>

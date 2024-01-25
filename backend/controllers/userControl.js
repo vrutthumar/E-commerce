@@ -4,6 +4,7 @@ const nodemailer = require("nodemailer");
 const products = require('../Model/productSchema');
 const { response } = require('express');
 const buyproducts = require('../Model/buyproductSchema');
+const transaction = require('../Model/transactionSchema');
 
 
 var transporter = nodemailer.createTransport({
@@ -124,12 +125,10 @@ const mugs = async (req, res) => {
 
 const addCartProduct = async (req, res) => {
     try {
-        const product = await buyproducts.findOne({ productId: req.body.productId, Id: req.body.Id , orderType : req.body.orderType})
-
-        
+        const product = await buyproducts.findOne({ productId: req.body.productId, Id: req.body.Id, orderType: req.body.orderType })
         if (!product) {
             const { username, Id } = await users.findOne({ Id: req.body.Id })
-            const { productName, productId, productUrl ,price} = await products.findOne({ productId: req.body.productId })
+            const { productName, productId, productUrl, price } = await products.findOne({ productId: req.body.productId })
 
             const buyData = {
                 "productName": productName,
@@ -137,23 +136,20 @@ const addCartProduct = async (req, res) => {
                 "productId": productId,
                 "productUrl": productUrl,
                 "Id": Id,
-                "price" : price,
+                "price": price,
                 "total": req.body.quantity * Number(price),
                 "quantity": req.body.quantity,
-                "orderType":req.body.orderType
+                "orderType": req.body.orderType
             }
             const productdata = await buyproducts.create(buyData)
-            
-            return res.status(200).json({ success: true, data: productdata, message: 'Product added To cart' });
+
+            return res.status(200).json({ success: true, data: productdata, message: productdata.orderType == "cart" ? 'Product added To cart' : "Order Placed" });
         }
         else {
-            const productUpdate = await buyproducts.findOneAndUpdate({ Id: req.body.Id, productId: req.body.productId , orderType : req.body.orderType }, { $set: { quantity: product.quantity + req.body.quantity } }, { new: true })
+            const productUpdate = await buyproducts.findOneAndUpdate({ Id: req.body.Id, productId: req.body.productId, orderType: req.body.orderType }, { $set: { quantity: product.quantity + req.body.quantity } }, { new: true })
+            const productprice = await buyproducts.findOneAndUpdate({ Id: productUpdate.Id, productId: productUpdate.productId }, { $set: { total: productUpdate.quantity * Number(productUpdate.price) } }, { new: true })
 
-            console.log("addCartProduct  productUpdate:", productUpdate)
-            
-            const productprice = await buyproducts.findOneAndUpdate({ Id: productUpdate.Id, productId: productUpdate.productId }, { $set: { total : productUpdate.quantity * Number(productUpdate.price)} }, { new: true })
-            
-            return res.status(200).json({ success: true, data: productprice, message: 'Product added To cart' });
+            return res.status(200).json({ success: true, data: productprice, message: productprice.orderType == "cart" ? 'Product added To cart' : "Order Placed" });
 
         }
     } catch (error) {
@@ -163,7 +159,7 @@ const addCartProduct = async (req, res) => {
 
 const getUsercart = async (req, res) => {
     try {
-        const productdata = await buyproducts.find({ Id: req.params.id , orderType: "cart" })
+        const productdata = await buyproducts.find({ Id: req.params.id, orderType: "cart" })
 
         return res.status(200).json({ success: true, data: productdata, message: 'Product added To cart' });
     } catch (error) {
@@ -175,9 +171,9 @@ const updateCart = async (req, res) => {
     try {
         const productdata = await buyproducts.findOne({ "Id": req.body.userId, "productId": req.body.productId })
 
-        const productUpdate = await buyproducts.findOneAndUpdate({ Id: req.body.userId, productId: req.body.productId , orderType : "cart" }, { $set: { quantity: productdata.quantity + req.body.quantity} }, { new: true })
-        
-        const productprice = await buyproducts.findOneAndUpdate({ Id: req.body.userId, productId: req.body.productId , orderType : "cart"}, { $set: { total : productUpdate.quantity * Number(productUpdate.price)} }, { new: true })
+        const productUpdate = await buyproducts.findOneAndUpdate({ Id: req.body.userId, productId: req.body.productId, orderType: "cart" }, { $set: { quantity: productdata.quantity + req.body.quantity } }, { new: true })
+
+        const productprice = await buyproducts.findOneAndUpdate({ Id: req.body.userId, productId: req.body.productId, orderType: "cart" }, { $set: { total: productUpdate.quantity * Number(productUpdate.price) } }, { new: true })
         if (productUpdate.quantity < 1) {
             const data1 = await buyproducts.deleteOne({ "Id": req.body.userId, "productId": req.body.productId })
             return res.status(200).json({ success: false, data: [], message: 'Product Removed To cart' });
@@ -188,4 +184,17 @@ const updateCart = async (req, res) => {
     }
 }
 
-module.exports = { findDetails, updateUserPassword, getAllProuct, tshirt, hoodies, stickers, mugs, updateProfile, addCartProduct, getUsercart, updateCart };
+// get wallet info
+
+const getWalletInfo = async (req, res) => {
+    try {
+        const userWalletInfo = await transaction.findOne({ Id: req.params.id })
+        return res.status(200).json({ success: true, data: userWalletInfo, message: 'Wallet Info get Successfully' });
+
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+module.exports = { findDetails, updateUserPassword, getAllProuct, tshirt, hoodies, stickers, mugs, updateProfile, addCartProduct, getUsercart, updateCart, getWalletInfo };
