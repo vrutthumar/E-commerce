@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { AiFillMinusCircle, AiFillPlusCircle } from 'react-icons/ai'
 import { MainUser } from './MainUser'
 import { NavLink } from 'react-router-dom'
-import { getUserCart } from './UserNav'
+import { getUserCart, getWalletInfo } from './UserNav'
 import Loading from '../Loading'
 import toast from 'react-hot-toast'
 import { Modal } from 'react-bootstrap'
@@ -13,6 +13,9 @@ const Cart = () => {
     const [loading, setloading] = useState(true)
     let [total, settotal] = useState(0)
     const [userCart, setuserCart] = useState([])
+
+    console.log("Cart  userCart:", userCart)
+
     const [quantity, setquantity] = useState({})
     const token = JSON.parse(localStorage.getItem("token"))
     let auth = {
@@ -27,6 +30,7 @@ const Cart = () => {
             if (res.data.success) {
                 setuserCart([...res.data.data])
                 getUserCart();
+                getWalletInfo()
                 setloading(false)
 
             }
@@ -39,7 +43,7 @@ const Cart = () => {
     useEffect(() => {
         getUserCartDetails()
 
-    }, [userCart])
+    }, [])
 
     const changeQuantity = (n, id) => {
         quantity['userId'] = JSON.parse(localStorage.getItem("loginId"))
@@ -47,7 +51,10 @@ const Cart = () => {
         quantity['quantity'] = n
         setquantity({ ...quantity })
         axios.post(`http://localhost:4000/codeswear/user/updatecart`, quantity, auth).then(res => {
-
+            if (res.data.success) {
+                // console.log(res.data)
+                getUserCartDetails()
+            }
         })
 
     }
@@ -59,10 +66,15 @@ const Cart = () => {
         buyProductObj["quantity"] = quantity
         buyProductObj["orderType"] = "buy"
         axios.post("http://localhost:4000/codeswear/user/addproduct", buyProductObj, auth).then(response => {
-            handleCloseproduct();
-            changeQuantity(-buyProductObj.quantity, product.productId)
-            toast.success("Order Placed")
-            getUserCart();
+            if (response.data.success) {
+                handleCloseproduct();
+                changeQuantity(-buyProductObj.quantity, product.productId)
+                getUserCart();
+                toast.success(response.data.message)
+            }
+            else {
+                toast.error(response.data.message)
+            }
         })
 
     }
@@ -77,7 +89,7 @@ const Cart = () => {
 
     const handleShowProduct = (x) => {
         setshowproduct(true)
-        setproduct(x)
+        setproduct({ ...x })
     };
     return (
         <>{
@@ -89,12 +101,12 @@ const Cart = () => {
                             </Modal.Header>
                             <Modal.Body className='flex justify-between space-x-3'>
                                 <div className='w-1/2'>
-                                    <img src={`http://localhost:4000/image/uploads/${product.productUrl}`} alt="" />
+                                    <img src={`http://localhost:4000/image/uploads/${product.productDetails?.productUrl}`} alt="" />
                                 </div>
                                 <div className='w-1/2'>
-                                    <p className='fw-semibold'>Product Name : </p><p> {product.productName}</p>
+                                    <p className='fw-semibold'>Product Name : </p><p> {product.productDetails?.productName}</p>
                                     <p className='fw-semibold'>Quantity :  {product.quantity}</p>
-                                    <p className='fw-semibold'>Total : {product.total}</p>
+                                    <p className='fw-semibold'>Total : {product.quantity * product.productDetails?.price}</p>
                                     <button className='w-100 mt-2 btn btn-outline-success' onClick={() => placeOrder(product.quantity)}>Confirm Order</button>
                                     <button className='w-100 mt-2 btn btn-outline-danger' onClick={handleCloseproduct}>Cancel Order</button>
                                 </div>
@@ -118,20 +130,20 @@ const Cart = () => {
                                             <>
                                                 {
                                                     userCart?.map((x) => {
-                                                        total += x.total
+                                                        total += (x.quantity * x.productDetails.price)
                                                         return <div className='w-25 p-3 product-info'>
                                                             <div className="p-2 cursor-pointer  shadow-lg h-100">
                                                                 <a className="block relative  rounded overflow-hidden">
-                                                                    <img alt="ecommerce" className="m-auto md:m-0 h-[25vh]  block" src={`http://localhost:4000/image/uploads/${x.productUrl}`} />
+                                                                    <img alt="ecommerce" className="m-auto md:m-0 h-[25vh]  block" src={`http://localhost:4000/image/uploads/${x.productDetails.productUrl}`} />
                                                                 </a>
                                                                 <div className=' py-3  fs-5 font-semibold flex flex-col items-center'>
-                                                                    <p>{x.productName}</p>
+                                                                    <p>{x.productDetails.productName}</p>
                                                                     <div className='flex items-center fs-4'>
                                                                         <button onClick={() => changeQuantity(-1, x.productId)} className='border bottom-2 p-1 flex justify-center items-center ' style={{ height: "30px", width: "30px" }}><AiFillMinusCircle /></button>
                                                                         <div className='border bottom-2 p-1 flex justify-center items-center  ' style={{ height: "30px", width: "30px" }}>{x.quantity}</div>
                                                                         <button onClick={() => changeQuantity(1, x.productId)} className='border bottom-2 p-1 flex justify-center items-center  ' style={{ height: "30px", width: "30px" }}><AiFillPlusCircle /></button>
                                                                     </div>
-                                                                    <p className='mt-2'>Total : ₹ {x.total}</p>
+                                                                    <p className='mt-2'>Total : ₹ {x.quantity * x.productDetails?.price}</p>
                                                                 </div>
                                                                 <div className='mt-2 flex justify-center items-center space-x-5'>
                                                                     <button className='primary-btn me-1' onClick={() => handleShowProduct(x)}>Buy Now</button>

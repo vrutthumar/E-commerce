@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const fs = require('fs');
-const { addUser, addProduct, updateUser, deleteUser, getAllUser, getAllProuct, updateProduct, deleteProduct, getproductID, findAdminDetails, updateAdminProfile, updateAdminPassword, getId, getAllBuyProduct, deliverProduct, walletInfo } = require('../controllers/adminControl');
+const { addUser, addProduct, updateUser, deleteUser, getAllUser, getAllProuct, updateProduct, deleteProduct, getproductID, findAdminDetails, updateAdminProfile, updateAdminPassword, getId, getAllBuyProduct, deliverProduct, walletInfo, getWalletInfo } = require('../controllers/adminControl');
 
 const multer = require('multer');
 
@@ -35,6 +35,8 @@ router.delete('/deleteproduct/:id', deleteProduct)
 router.get('/getallbuyproduct', getAllBuyProduct)
 router.delete('/deliverproduct/:id', deliverProduct)
 router.get('/walletInfo', walletInfo)
+router.get('/userWalletInfo/:id', getWalletInfo)
+
 
 
 

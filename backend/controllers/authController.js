@@ -7,8 +7,8 @@ const transaction = require('../Model/transactionSchema');
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'vrutthumar12@gmail.com',
-        pass: 'mnek tqzs knnj mcsw'
+        user: process.env.APP_EMAIL,
+        pass: process.env.APP_PASSWORDS
     }
 });
 
@@ -23,19 +23,20 @@ const otpGeneraor = () => {
 
 const refrelCodeGenerator = async () => {
     const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let refCode = ""
+    let refCode = "";
+
     for (let i = 0; i < 6; ++i) {
         refCode += charset.charAt(Math.floor(Math.random() * charset.length)).toUpperCase();
     }
-    let allRefrerId = await users.find()
-    allRefrerId = allRefrerId.map(x => x.refralCode)
-    if (allRefrerId.length != 0 || allRefrerId.filter(x => x == refCode).length == 0) {
-        return refCode
-    }
-    else {
-        refrelCodeGenerator()
-    }
 
+    let allReferralCodes = await users.find();
+    allReferralCodes = allReferralCodes.map(x => x.referralCode);
+
+    if (allReferralCodes.length === 0 || allReferralCodes.indexOf(refCode) === -1) {
+        return refCode;
+    } else {
+        return refrelCodeGenerator();
+    }
 }
 const signUp = async (req, res) => {
     try {
@@ -63,11 +64,13 @@ const signUp = async (req, res) => {
                         role: data.role
                     }, process.env.SECRET_KEY, { expiresIn: '1h' });
                     const data1 = await users.create(data)
-                    const wallet = await transaction.create({
-                        Id: data1.Id,
-                        walletAmount: 100,
-                        transactions: [{ "message": "Joining Bonus", "time": new Date(), "type": "Credited", "amount": 100 }]
-                    })
+                    if (data1.role !== "Admin") {
+                        const wallet = await transaction.create({
+                            Id: data1.Id,
+                            walletAmount: 100,
+                            transactions: [{ "message": "Joining Bonus", "time": new Date(), "type": "Credited", "amount": 100 }]
+                        })
+                    }
                     if (data1.refPerson !== "") {
                         const walletUpdate = await transaction.findOneAndUpdate(
                             { Id: data1.refPerson },
@@ -85,7 +88,7 @@ const signUp = async (req, res) => {
 
                     }
                     var mailOptions = {
-                        from: 'vrutthumar12@gmail.com',
+                        from: process.env.APP_EMAIL,
                         to: req.body.email,
                         subject: 'Register To Codeswear.com',
                         html: `<div>Welcome To CodesWear.com !!!</div> <br> <br> <div>Register Successfully</div>`
@@ -129,7 +132,7 @@ const login = async (req, res) => {
                     role: data.role
                 }, process.env.SECRET_KEY, { expiresIn: '1h' });
                 var mailOptions = {
-                    from: 'vrutthumar12@gmail.com',
+                    from: process.env.APP_EMAIL,
                     to: data.email,
                     subject: 'Login To Codeswear.com',
                     html: `<div>Welcome To CodesWear.com !!!</div> <br> <br> <div>Login Successfully</div>`
@@ -173,7 +176,7 @@ const emailverification = async (req, res) => {
             role: update.role
         }, process.env.SECRET_KEY, { expiresIn: '120' });
         var mailOptions = {
-            from: 'vrutthumar12@gmail.com',
+            from: process.env.APP_EMAIL,
             to: data.email,
             subject: 'Otp Verification',
             html: `<div>Welcome To CodesWear.com !!!</div> <br> <br> <div>${update.otp} is Your Otp for Email Verify</div>`

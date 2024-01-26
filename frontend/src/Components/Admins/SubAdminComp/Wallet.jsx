@@ -55,28 +55,30 @@ const Wallet = () => {
                                 <Modal.Header closeButton>
                                     <h2><RxCounterClockwiseClock className='d-inline-block' /> Transaction</h2>
                                 </Modal.Header>
-                                <Modal.Body className='flex justify-center'>
-                                    {
-                                        transactions.map((x) => {
-                                            return <div className="w-75 mx-auto d-flex align-items-center justify-content-between">
-                                                <div className='d-flex align-items-center'>
-                                                    <div className='me-2'>
-                                                        {
-                                                            x.type == "Credited" ? <FaArrowCircleRight color='green' size={30} /> : <FaArrowCircleLeft color='red' size={30} />
-                                                        }
+                                <Modal.Body >
+                                    <div className='w-75 mx-auto'>
+                                        {
+                                            transactions.map((x) => {
+                                                return <div className="py-2 d-flex align-items-center justify-content-between">
+                                                    <div className='d-flex align-items-center'>
+                                                        <div className='me-2'>
+                                                            {
+                                                                x.type == "Credited" ? <FaArrowCircleRight color='green' size={30} /> : <FaArrowCircleLeft color='red' size={30} />
+                                                            }
+                                                        </div>
+                                                        <div>
+                                                            <p className='fw-bold'>{x.type}</p>
+                                                            <p>{x.message}</p>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <p className='fw-bold'>{x.type}</p>
-                                                        <p>{x.message}</p>
+                                                    <div className='text-center'>
+                                                        <p className='fw-bold' style={{ color: "#245ced" }}>₹ {x.amount}</p>
+                                                        <p>{moment(x.time).format('MMMM Do YYYY, h:mm:ss a')}</p>
                                                     </div>
                                                 </div>
-                                                <div className='text-center'>
-                                                    <p className='fw-bold' style={{ color: "#245ced" }}>₹ {x.amount}</p>
-                                                    <p>{moment(x.time).format('MMMM Do YYYY, h:mm:ss a')}</p>
-                                                </div>
-                                            </div>
-                                        })
-                                    }
+                                            })
+                                        }
+                                    </div>
                                 </Modal.Body>
                             </Modal >
                             <div className='d-flex align-items-center justify-content-between px-5 py-3 '>

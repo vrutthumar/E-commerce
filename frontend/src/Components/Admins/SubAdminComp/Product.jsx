@@ -174,93 +174,101 @@ const Product = () => {
             {
                 loading ? (<Loading />) :
                     (
-                        <>
-                            <Modal show={showimg} onHide={handleCloseimg} scrollable>
-                                <Modal.Header closeButton>
-                                </Modal.Header>
-                                <Modal.Body className='flex justify-center'>
-                                    <img src={`http://localhost:4000/image/uploads/${img}`} alt="" />
-                                </Modal.Body>
+                        allProduct.length == 0
+                            ?
+                            <>
+                                <div className='text-center w-100 mt-5'>
+                                    <h1 className='flex items-center justify-center text-dark' >No Products Found<img src="https://tradibha.com/images/empty_cart.png" alt="" style={{ height: "200px", width: "200px" }} /></h1>
+                                </div>
+                            </>
+                            :
+                            <>
+                                <Modal show={showimg} onHide={handleCloseimg} scrollable>
+                                    <Modal.Header closeButton>
+                                    </Modal.Header>
+                                    <Modal.Body className='flex justify-center'>
+                                        <img src={`http://localhost:4000/image/uploads/${img}`} alt="" />
+                                    </Modal.Body>
 
-                            </Modal >
-                            <div className='d-flex align-items-center justify-content-between px-5 py-3 '>
-                                <h3>All Products</h3>
-                                <button className='btn btn-outline-primary' onClick={handleShow}>
-                                    Add Products
-                                </button>
-                            </div>
-                            <Modal show={show} onHide={handleClose} size='lg' scrollable>
-                                <Modal.Header closeButton>
-                                    <Modal.Title>Add Data</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-
-
-                                    <Form.Label className='d-block fw-bold'>Product Name</Form.Label>
-                                    <Form.Control type="text" name='productName' onChange={productData} value={productObj.productName ?? ""} />
-
-                                    <Form.Label className='d-block fw-bold mt-2'>Product Url</Form.Label>
-                                    <Form.Control type="file" name='productUrl' onChange={productData} />
-
-                                    <Form.Label className='d-block fw-bold mt-2'>Product Type </Form.Label>
-                                    <Form.Check inline type="radio" label="T-Shirt" value="T-Shirt" checked={productObj?.productType == "T-Shirt"} name='productType' onChange={productData} />
-                                    <Form.Check inline type="radio" label="Hoodies" value="Hoodies" checked={productObj?.productType == "Hoodies"} name='productType' onChange={productData} />
-                                    <Form.Check inline type="radio" label="Stickers" value="Stickers" checked={productObj?.productType == "Stickers"} name='productType' onChange={productData} />
-                                    <Form.Check inline type="radio" label="Mugs" value="Mugs" checked={productObj?.productType == "Mugs"} name='productType' onChange={productData} />
-
-                                    <Form.Label className='d-block fw-bold mt-2'>Price</Form.Label>
-                                    <Form.Control type="number" name='price' onChange={productData} value={productObj.price ?? ""} />
-
-                                    <Form.Label className='d-block fw-bold mt-2'>Discription</Form.Label>
-                                    <Form.Control type="text" name='discription' onChange={productData} value={productObj.discription ?? ""} />
-
-                                    <div className='mt-2'>
-                                        <img src={diaplayimg} alt="" style={{ height: "auto", maxHeight: "150px" }} />
-                                    </div>
-
-                                </Modal.Body>
-                                <Modal.Footer>
-                                    <button className='btn btn-outline-primary' onClick={() => { save() }} type='button'>Save Changes</button>
-                                </Modal.Footer>
-                            </Modal>
-                            <div className="w-100 ">
-                                <Table className='border border-3 text-center recent-act w-100 mt-3'>
-                                    <thead>
-                                        <tr>
-                                            <th className='border border-3 active-tab'>Product Id</th>
-                                            <th className='border border-3 active-tab'>Product Name</th>
-                                            <th className='border border-3 active-tab'>Product</th>
-                                            <th className='border border-3 active-tab'>Product Type </th>
-                                            <th className='border border-3 active-tab'>Price </th>
-                                            <th className='border border-3 active-tab'>Discription </th>
-                                            <th className='border border-3 active-tab'>Action </th>
+                                </Modal >
+                                <div className='d-flex align-items-center justify-content-between px-5 py-3 '>
+                                    <h3>All Products</h3>
+                                    <button className='btn btn-outline-primary' onClick={handleShow}>
+                                        Add Products
+                                    </button>
+                                </div>
+                                <Modal show={show} onHide={handleClose} size='lg' scrollable>
+                                    <Modal.Header closeButton>
+                                        <Modal.Title>Add Data</Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
 
 
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            allProduct?.map((x, i) => {
-                                                return (
-                                                    <tr key={i}>
-                                                        <td className='border border-3'>{x.productId}</td>
-                                                        <td className='border border-3'>{x.productName}</td>
-                                                        <td className='border border-3 flex justify-center cursor-pointer' onClick={(url) => handleShowImg(x.productUrl)}><img src={`http://localhost:4000/image/uploads/${x.productUrl}`} alt="" style={{ height: "55px" }} /></td>
-                                                        <td className='border border-3'>{x.productType}</td>
-                                                        <td className='border border-3'>₹ {x.price}</td>
-                                                        <td className='border border-3'>{x.discription}</td>
-                                                        <td className='border border-3'>
-                                                            <div className="btn btn-outline-success me-2" onClick={(id) => editProduct(x.productId)}>Edit</div>
-                                                            <div className="btn btn-outline-danger" onClick={(id) => deleteProduct(x.productId)}>Delete</div>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-                                    </tbody>
-                                </Table>
-                            </div>
-                        </>
+                                        <Form.Label className='d-block fw-bold'>Product Name</Form.Label>
+                                        <Form.Control type="text" name='productName' onChange={productData} value={productObj.productName ?? ""} />
+
+                                        <Form.Label className='d-block fw-bold mt-2'>Product Url</Form.Label>
+                                        <Form.Control type="file" name='productUrl' onChange={productData} />
+
+                                        <Form.Label className='d-block fw-bold mt-2'>Product Type </Form.Label>
+                                        <Form.Check inline type="radio" label="T-Shirt" value="T-Shirt" checked={productObj?.productType == "T-Shirt"} name='productType' onChange={productData} />
+                                        <Form.Check inline type="radio" label="Hoodies" value="Hoodies" checked={productObj?.productType == "Hoodies"} name='productType' onChange={productData} />
+                                        <Form.Check inline type="radio" label="Stickers" value="Stickers" checked={productObj?.productType == "Stickers"} name='productType' onChange={productData} />
+                                        <Form.Check inline type="radio" label="Mugs" value="Mugs" checked={productObj?.productType == "Mugs"} name='productType' onChange={productData} />
+
+                                        <Form.Label className='d-block fw-bold mt-2'>Price</Form.Label>
+                                        <Form.Control type="number" name='price' onChange={productData} value={productObj.price ?? ""} />
+
+                                        <Form.Label className='d-block fw-bold mt-2'>Discription</Form.Label>
+                                        <Form.Control type="text" name='discription' onChange={productData} value={productObj.discription ?? ""} />
+
+                                        <div className='mt-2'>
+                                            <img src={diaplayimg} alt="" style={{ height: "auto", maxHeight: "150px" }} />
+                                        </div>
+
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <button className='btn btn-outline-primary' onClick={() => { save() }} type='button'>Save Changes</button>
+                                    </Modal.Footer>
+                                </Modal>
+                                <div className="w-100 ">
+                                    <Table className='border border-3 text-center recent-act w-100 mt-3'>
+                                        <thead>
+                                            <tr>
+                                                <th className='border border-3 active-tab'>Product Id</th>
+                                                <th className='border border-3 active-tab'>Product Name</th>
+                                                <th className='border border-3 active-tab'>Product</th>
+                                                <th className='border border-3 active-tab'>Product Type </th>
+                                                <th className='border border-3 active-tab'>Price </th>
+                                                <th className='border border-3 active-tab'>Discription </th>
+                                                <th className='border border-3 active-tab'>Action </th>
+
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                allProduct?.map((x, i) => {
+                                                    return (
+                                                        <tr key={i}>
+                                                            <td className='border border-3'>{x.productId}</td>
+                                                            <td className='border border-3'>{x.productName}</td>
+                                                            <td className='border border-3 flex justify-center cursor-pointer' onClick={(url) => handleShowImg(x.productUrl)}><img src={`http://localhost:4000/image/uploads/${x.productUrl}`} alt="" style={{ height: "55px" }} /></td>
+                                                            <td className='border border-3'>{x.productType}</td>
+                                                            <td className='border border-3'>₹ {x.price}</td>
+                                                            <td className='border border-3'>{x.discription}</td>
+                                                            <td className='border border-3'>
+                                                                <div className="btn btn-outline-success me-2" onClick={(id) => editProduct(x.productId)}>Edit</div>
+                                                                <div className="btn btn-outline-danger" onClick={(id) => deleteProduct(x.productId)}>Delete</div>
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
+                                    </Table>
+                                </div>
+                            </>
                     )
             }
         </>

@@ -92,7 +92,7 @@ const BuyProduct = () => {
                                     <Modal.Header closeButton>
                                     </Modal.Header>
                                     <Modal.Body className='flex justify-center'>
-                                        <img src={`http://localhost:4000/image/uploads/${img}`}alt="" />
+                                        <img src={`http://localhost:4000/image/uploads/${img}`} alt="" />
                                     </Modal.Body>
 
                                 </Modal >
@@ -122,12 +122,12 @@ const BuyProduct = () => {
                                                     return (
                                                         <tr key={i}>
                                                             <td className='border border-3'>{x.productId}</td>
-                                                            <td className='border border-3 flex justify-center cursor-pointer' onClick={(url) => handleShowImg(x.productUrl)}><img src={`http://localhost:4000/image/uploads/${x.productUrl}`} alt="" style={{ height: "55px" }} /></td>
-                                                            <td className='border border-3'>{x.productName}</td>
+                                                            <td className='border border-3 flex justify-center cursor-pointer' onClick={(url) => handleShowImg(x.productDetails.productUrl)}><img src={`http://localhost:4000/image/uploads/${x.productDetails.productUrl}`} alt="" style={{ height: "55px" }} /></td>
+                                                            <td className='border border-3'>{x.productDetails.productName}</td>
                                                             <td className='border border-3'>{x.Id}</td>
-                                                            <td className='border border-3'>{x.userName}</td>
+                                                            <td className='border border-3'>{x.userDetails.username}</td>
                                                             <td className='border border-3'>{x.quantity}</td>
-                                                            <td className='border border-3'>₹ {x.total}</td>
+                                                            <td className='border border-3'>₹ {x.quantity * x.productDetails?.price}</td>
                                                             <td className='border border-3'>
                                                                 <div className="btn btn-outline-success" onClick={(id) => deliver(x.productId)}>Deliver The Product</div>
                                                             </td>

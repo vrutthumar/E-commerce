@@ -9,8 +9,8 @@ const transaction = require('../Model/transactionSchema');
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'vrutthumar12@gmail.com',
-        pass: 'mnek tqzs knnj mcsw'
+        user: process.env.APP_EMAIL,
+        pass: process.env.APP_PASSWORDS
     }
 });
 
@@ -76,7 +76,43 @@ const updateAdminPassword = async (req, res) => {
 // ===========================Product Apis ========================= //
 const getAllBuyProduct = async (req, res) => {
     try {
-        const productdata = await buyproducts.find({ orderType: "buy" })
+        const productdata = await buyproducts.aggregate([
+            {
+                $match: {
+                    "orderType": "buy"
+                }
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "productId",
+                    foreignField: "productId",
+                    as: "productDetails"
+                }
+            },
+            {
+                $addFields: {
+                    productDetails: {
+                        $first: "$productDetails"
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "Id",
+                    foreignField: "Id",
+                    as: "userDetails"
+                }
+            },
+            {
+                $addFields: {
+                    userDetails: {
+                        $first: "$userDetails"
+                    }
+                }
+            }
+        ])
 
         return res.status(200).json({ success: true, data: productdata, message: 'All Product Got' });
     } catch (error) {
@@ -184,7 +220,7 @@ const addUser = async (req, res) => {
             }
             const data1 = await users.create(data)
             var mailOptions = {
-                from: 'vrutthumar12@gmail.com',
+                from: process.env.APP_EMAIL,
                 to: req.body.email,
                 subject: 'Register To Codeswear.com',
                 html: `<div>Welcome To CodesWear.com !!!</div> <br> <br> <div>Register Successfully</div> <br> <br> <div>Email ${req.body.email}</div> <br> <br> <div>Password ${req.body.password}</div> <br> <br> <div>Please Don't Share Your credential with Any One</div>`
@@ -235,8 +271,9 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     try {
-        const data1 = await users.deleteOne({ Id: req.params.id })
-        return res.status(200).json({ success: true, data: data1, message: 'User Deleted' });
+        const userDelete = await users.deleteOne({ Id: req.params.id })
+        const walletDelete = await transaction.deleteOne({ Id: req.params.id })
+        return res.status(200).json({ success: true, data: userDelete, message: 'User Deleted' });
     } catch (error) {
         console.log(error);
         return res.status(200).json({ success: false, data: [], message: 'Intertal Server Error' });
@@ -255,5 +292,15 @@ const walletInfo = async (req, res) => {
     }
 }
 
+const getWalletInfo = async (req, res) => {
+    try {
+        const userWalletInfo = await transaction.findOne({ Id: req.params.id })
+        return res.status(200).json({ success: true, data: userWalletInfo, message: 'Wallet Info get Successfully' });
 
-module.exports = { findAdminDetails, updateAdminProfile, updateAdminPassword, getAllUser, addUser, getId, updateUser, deleteUser, getAllProuct, addProduct, updateProduct, deleteProduct, getproductID, getAllBuyProduct, deliverProduct, walletInfo };
+    } catch (error) {
+        console.log(error);
+
+    }
+}
+
+module.exports = { findAdminDetails, updateAdminProfile, updateAdminPassword, getAllUser, addUser, getId, updateUser, deleteUser, getAllProuct, addProduct, updateProduct, deleteProduct, getproductID, getAllBuyProduct, deliverProduct, walletInfo, getWalletInfo };
