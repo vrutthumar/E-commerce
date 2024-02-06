@@ -1,24 +1,25 @@
 import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Tshirts from './Components/Users/SubUserComp/tshirt';
-import { Authorization } from './Components/Main';
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
-import Index from './Components/Users/SubUserComp/Index';
-import Stickers from './Components/Users/SubUserComp/stickers';
-import Hoodies from './Components/Users/SubUserComp/hoodies';
-import Mugs from './Components/Users/SubUserComp/mugs';
+import { createContext, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import AdminProfile from './Components/Admins/SubAdminComp/AdminProfile';
-import UserProfile from './Components/Users/UserProfile';
-import { createContext, useState } from 'react';
 import Product from './Components/Admins/SubAdminComp/Product';
-import ForgotPassword from './Components/ForgotPassword';
-import AllProducts from './Components/Users/SubUserComp/AllProducts';
 import User from './Components/Admins/SubAdminComp/User';
 import BuyProduct from './Components/Admins/SubAdminComp/BuyProduct';
-import Cart from './Components/Users/Cart';
 import Wallet from './Components/Admins/SubAdminComp/Wallet';
+import Index from './Components/Users/SubUserComp/Index';
+import UserProfile from './Components/Users/UserProfile';
+import AllProducts from './Components/Users/SubUserComp/AllProducts';
+import Tshirts from './Components/Users/SubUserComp/tshirt';
+import Hoodies from './Components/Users/SubUserComp/hoodies';
+import Stickers from './Components/Users/SubUserComp/stickers';
+import Mugs from './Components/Users/SubUserComp/mugs';
+import ForgotPassword from './Components/Auth/ForgotPassword';
+import { Authorization } from './Components/Auth/Main';
+import Cart from './Components/Users/Cart';
+
 
 
 export let Context = createContext()

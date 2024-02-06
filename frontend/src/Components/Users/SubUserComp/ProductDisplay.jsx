@@ -3,19 +3,15 @@ import React, { useState } from 'react'
 import { Modal } from 'react-bootstrap'
 import toast from 'react-hot-toast'
 import { getUserCart } from '../UserNav'
+import { postApiData } from '../axiosUserClient'
 
 
 const ProductDisplay = (props) => {
     const [product, setproduct] = useState({})
-    const token = JSON.parse(localStorage.getItem("token"))
-    let auth = {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    }
+
     const [buyProductObj, setbuyProductObj] = useState({})
 
-    const buyProduct = (product, type) => {
+    const buyProduct = async (product, type) => {
         buyProductObj['productId'] = product.productId
         buyProductObj["Id"] = JSON.parse(localStorage.getItem("loginId"))
         buyProductObj["quantity"] = 1
@@ -28,23 +24,24 @@ const ProductDisplay = (props) => {
         }
 
         else {
-            axios.post("http://localhost:4000/codeswear/user/addproduct", buyProductObj, auth).then(response => {
-                toast.success(response.data.message)
+            const response = await postApiData("/addproduct", buyProductObj)
+            if (response.success) {
+                toast.success(response.message)
                 getUserCart();
-            })
+            }
 
         }
 
     }
 
-    const placeOrder = () => {
+    const placeOrder = async () => {
 
-        axios.post("http://localhost:4000/codeswear/user/addproduct", buyProductObj, auth).then(response => {
+        const response = await postApiData("/addproduct", buyProductObj)
+        if (response.success) {
             handleCloseproduct();
-            toast.success("Order Placed")
+            toast.success(response.message)
             getUserCart();
-        })
-
+        }
     }
     const [showproduct, setshowproduct] = useState(false)
 

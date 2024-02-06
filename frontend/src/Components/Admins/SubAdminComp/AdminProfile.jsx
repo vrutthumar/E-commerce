@@ -9,7 +9,7 @@ import { MainAdmin } from '../MainAdmin'
 import Loading from '../../Loading'
 
 
-function UserProfile() {
+function AdminProfile() {
     const [loading, setloading] = useState(true)
 
     let islogin = useContext(Context)
@@ -226,4 +226,4 @@ function UserProfile() {
     )
 }
 
-export default MainAdmin(UserProfile)
+export default MainAdmin(AdminProfile)

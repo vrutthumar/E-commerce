@@ -8,33 +8,28 @@ import Loading from '../Loading'
 import toast from 'react-hot-toast'
 import { Modal } from 'react-bootstrap'
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { getApiResource, postApiData } from './axiosUserClient'
 
 const Cart = () => {
     const [loading, setloading] = useState(true)
     let [total, settotal] = useState(0)
     const [userCart, setuserCart] = useState([])
 
-    console.log("Cart  userCart:", userCart)
 
     const [quantity, setquantity] = useState({})
-    const token = JSON.parse(localStorage.getItem("token"))
-    let auth = {
-        headers: {
-            Authorization: `Bearer ${token}`
+
+
+
+    const getUserCartDetails = async () => {
+        const response = await getApiResource(`/getusercart/${JSON.parse(localStorage.getItem("loginId"))}`)
+
+        if (response.success) {
+            setuserCart([...response.data])
+            getUserCart();
+            getWalletInfo()
+            setloading(false)
+
         }
-    }
-
-
-    const getUserCartDetails = () => {
-        axios.get(`http://localhost:4000/codeswear/user/getusercart/${JSON.parse(localStorage.getItem("loginId"))}`, auth).then(res => {
-            if (res.data.success) {
-                setuserCart([...res.data.data])
-                getUserCart();
-                getWalletInfo()
-                setloading(false)
-
-            }
-        })
     }
     useEffect(() => {
         settotal(total)
@@ -45,37 +40,34 @@ const Cart = () => {
 
     }, [])
 
-    const changeQuantity = (n, id) => {
+    const changeQuantity = async (n, id) => {
         quantity['userId'] = JSON.parse(localStorage.getItem("loginId"))
         quantity['productId'] = id
         quantity['quantity'] = n
         setquantity({ ...quantity })
-        axios.post(`http://localhost:4000/codeswear/user/updatecart`, quantity, auth).then(res => {
-            if (res.data.success) {
-                // console.log(res.data)
-                getUserCartDetails()
-            }
-        })
-
+        const response = await postApiData(`/updatecart`, quantity)
+        if (response.success) {
+            getUserCartDetails()
+        }
     }
     const [buyProductObj, setbuyProductObj] = useState({})
 
-    const placeOrder = (quantity) => {
+    const placeOrder = async (quantity) => {
         buyProductObj['productId'] = product.productId
         buyProductObj["Id"] = JSON.parse(localStorage.getItem("loginId"))
         buyProductObj["quantity"] = quantity
         buyProductObj["orderType"] = "buy"
-        axios.post("http://localhost:4000/codeswear/user/addproduct", buyProductObj, auth).then(response => {
-            if (response.data.success) {
-                handleCloseproduct();
-                changeQuantity(-buyProductObj.quantity, product.productId)
-                getUserCart();
-                toast.success(response.data.message)
-            }
-            else {
-                toast.error(response.data.message)
-            }
-        })
+        setbuyProductObj({ ...buyProductObj })
+        const response = await postApiData("/addproduct", buyProductObj)
+        if (response.success) {
+            handleCloseproduct();
+            changeQuantity(-buyProductObj.quantity, product.productId)
+            getUserCart();
+            toast.success(response.message)
+        }
+        else {
+            toast.error(response.message)
+        }
 
     }
 

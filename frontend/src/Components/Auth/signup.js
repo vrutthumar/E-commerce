@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import axios from 'axios'
 import toast from 'react-hot-toast';
-import { Context } from '../App';
+import { Context } from '../../App';
 import { useNavigate } from 'react-router-dom';
 
 

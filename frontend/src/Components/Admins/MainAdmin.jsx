@@ -3,14 +3,14 @@ import AdminNavbar from './AdminNav'
 import AdminFooter from './AdminFooter'
 
 export const MainAdmin = (Component) => {
-  const newComponent = () =>{
+  const newComponent = () => {
     return (
       <>
-        <AdminNavbar/>
-       <div className='relative'style={{minHeight : 'calc(100vh - 267px )'}} >
+        <AdminNavbar />
+        <div className='relative' style={{ minHeight: 'calc(100vh - 247px)' }} >
           <Component />
         </div>
-        <AdminFooter/>
+        <AdminFooter />
       </>
     )
   }

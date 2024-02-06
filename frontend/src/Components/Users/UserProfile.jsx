@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Form, Table } from 'react-bootstrap'
-import axios from 'axios'
+import { Form } from 'react-bootstrap'
 import { BsPersonCircle } from "react-icons/bs"
 import Swal from 'sweetalert2'
 import { MainUser } from './MainUser'
 import { Context } from '../../App'
 import toast from 'react-hot-toast'
 import Loading from '../Loading'
+import { getApiResource, postApiData } from './axiosUserClient'
 
 
-function UserProfile() {
+const UserProfile = () => {
     const [loading, setloading] = useState(true)
 
     let islogin = useContext(Context)
@@ -20,7 +20,6 @@ function UserProfile() {
     let [blankobj, setblankobj] = useState({})
     let [profileObj, setprofileObj] = useState({})
     const token = JSON.parse(localStorage.getItem("token"))
-    const Id = JSON.parse(localStorage.getItem("loginId"))
     let auth = {
         headers: {
             Authorization: `Bearer ${token}`
@@ -34,34 +33,35 @@ function UserProfile() {
         setupdatePasswordObj({ ...updatePasswordObj })
 
     }
-    const savePassword = (e) => {
+    const savePassword = async (e) => {
         e.preventDefault();
         updatePasswordObj['email'] = profileObj.email
         setupdatePasswordObj({ ...updatePasswordObj })
-        axios.post(`http://localhost:4000/codeswear/user/updateuserpassword/${Id}`, updatePasswordObj, auth).then(res => {
-            if (res.data.success) {
-                e.target.reset();
-                toast.success(res.data.message)
-            }
-            else {
-                toast.error(res.data.message)
+        const res = await postApiData(`/updateuserpassword/${JSON.parse(localStorage.getItem("loginId"))}`, updatePasswordObj)
+        if (res.success) {
+            e.target.reset();
+            toast.success(res.message)
+        }
+        else {
+            toast.error(res.message)
 
-            }
-        })
+        }
+
     }
     useEffect(() => {
         profile();
     }, [])
 
 
-    const profile = () => {
-        axios.get(`http://localhost:4000/codeswear/user/getuser/${Id}`, auth).then(res => {
-            setprofileObj({ ...res.data.data })
-            setupdateProfileObj({ ...res.data.data })
+    const profile = async () => {
+        const res = await getApiResource(`/getuser/${JSON.parse(localStorage.getItem("loginId"))}`, auth)
+        console.log(res)
+        if (res.success) {
+
+            setprofileObj({ ...res.data })
+            setupdateProfileObj({ ...res.data })
             setloading(false)
-
-
-        })
+        }
     }
     let updateProfile = async (e) => {
 
@@ -72,16 +72,16 @@ function UserProfile() {
 
 
     const update = async () => {
-        axios.post(`http://localhost:4000/codeswear/user/updateprofile/${Id}`, updateProfileObj, auth).then(res => {
-            if (res.data.success) {
-                toast.success(res.data.message)
-                profile();
-            }
-            else {
-                toast.error(res.data.message)
+        const res = await postApiData(`/updateprofile/${JSON.parse(localStorage.getItem("loginId"))}`, updateProfileObj)
+        if (res.data.success) {
+            toast.success(res.data.message)
+            profile();
+        }
+        else {
+            toast.error(res.data.message)
 
-            }
-        })
+        }
+
     }
 
     const tabView = (index) => {
@@ -135,7 +135,7 @@ function UserProfile() {
             {
                 loading ? (<Loading />) :
                     (
-                        <section className='w-100 mx-auto px-5 py-4   gap-5    '>
+                        <section className='w-100 mx-auto px-5 py-4 gap-5'>
                             <div className='d-flex  gap-3 align-self-center'>
                                 <button className=' primary-btn tabBtn px-5 py-2 rounded w-100 active-tab ' onClick={(e) => { tabView(0) }}>My Profile</button>
                                 <button className=' primary-btn tabBtn px-5 py-2 rounded w-100 ms-auto' onClick={(e) => { tabView(1) }}>Update Profile</button>

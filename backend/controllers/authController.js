@@ -68,6 +68,7 @@ const signUp = async (req, res) => {
                         const wallet = await transaction.create({
                             Id: data1.Id,
                             walletAmount: 100,
+                            email: data.email,
                             transactions: [{ "message": "Joining Bonus", "time": new Date(), "type": "Credited", "amount": 100 }]
                         })
                     }

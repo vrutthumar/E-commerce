@@ -28,7 +28,7 @@ const findDetails = async (req, res) => {
     try {
         const user = await users.findOne({ "Id": req.params.id })
 
-        return res.status(200).json({ success: false, data: user, message: 'User Found' });
+        return res.status(200).json({ success: true, data: user, message: 'User Found' });
 
     } catch (error) {
         console.log(error);
@@ -295,6 +295,7 @@ const getWalletInfo = async (req, res) => {
 const cardEmailVerify = async (req, res) => {
 
     try {
+        console.log("req.body", req.body)
         const transactions = await transaction.findOne({ email: req.body.email, Id: req.params.id })
         if (transactions) {
 

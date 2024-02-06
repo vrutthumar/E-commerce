@@ -3,7 +3,7 @@ import Signup from './signup'
 import { NavLink } from 'react-router-dom';
 import Login from './login';
 import Swal from 'sweetalert2';
-import { Context } from '../App';
+import { Context } from '../../App';
 
 
 export const Authorization = () => {

@@ -8,7 +8,7 @@ export const MainUser = (Component) => {
     return (
       <>
         <UserNavbar />
-        <div className='relative' style={{minHeight : 'calc(100vh - 267px )'}} >
+        <div className='relative' style={{ minHeight: 'calc(100vh - 247px )' }} >
           <Component />
         </div>
         <UserFooter />

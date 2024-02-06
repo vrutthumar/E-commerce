@@ -5,6 +5,7 @@ import { MainUser } from '../MainUser'
 import axios from 'axios'
 import Loading from '../../Loading'
 import ProductDisplay from './ProductDisplay'
+import { getApiResource } from '../axiosUserClient'
 
 const Hoodies = () => {
   const [loading, setloading] = useState(true)
@@ -16,12 +17,13 @@ const Hoodies = () => {
     }
   }
 
-  const gethoodies = () => {
-    axios.get("http://localhost:4000/codeswear/user/hoodies", auth).then(response => {
-      sethoodies([...response.data.data])
+  const gethoodies = async () => {
+    const response = await getApiResource("/hoodies")
+    if (response.success) {
+      sethoodies([...response.data])
       setloading(false)
 
-    })
+    }
   }
 
 

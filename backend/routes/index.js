@@ -8,8 +8,8 @@ const authorise = require("./../middleware/jwtAuth")
 
 
 router.use('/auth', auth);
-router.use('/admin',authorise(["Admin"]),admin);
-router.use('/user',authorise(["User"]),user);
+router.use('/admin', authorise(["Admin"]), admin);
+router.use('/user', authorise(["User"]), user);
 
 
 module.exports = router

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Badge, FloatingLabel, Form, Modal } from 'react-bootstrap';
 import { AiOutlineShoppingCart } from "react-icons/ai";
@@ -9,8 +8,11 @@ import { RxCounterClockwiseClock } from "react-icons/rx";
 import moment from 'moment';
 import { FaWallet } from "react-icons/fa";
 import toast from 'react-hot-toast';
+import { getApiResource, postApiData } from './axiosUserClient';
 export let getUserCart;
 export let getWalletInfo;
+
+
 const UserNavbar = () => {
   const [products, setproducts] = useState(0)
   const [show, setShow] = useState(false);
@@ -18,27 +20,15 @@ const UserNavbar = () => {
   const [walletInfo, setwalletInfo] = useState({});
   const [cardInfo, setcardInfo] = useState({});
   const [addMoney, setaddMoney] = useState(false)
-  const token = JSON.parse(localStorage.getItem("token"))
-  let auth = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-  getUserCart = () => {
-    axios.get(`http://localhost:4000/codeswear/user/getusercart/${JSON.parse(localStorage.getItem("loginId"))}`, auth).then(res => {
-      if (res.data.success) {
-        setproducts([...res.data.data].length)
-      }
-    })
+  getUserCart = async () => {
+    const response = await getApiResource(`/getusercart/${JSON.parse(localStorage.getItem("loginId"))}`)
+    setproducts(response.data.length)
+
   }
 
-  getWalletInfo = () => {
-    axios.get(`http://localhost:4000/codeswear/user/userWalletInfo/${JSON.parse(localStorage.getItem("loginId"))}`, auth).then(res => {
-      if (res.data.success) {
-
-        setwalletInfo({ ...res.data.data })
-      }
-    })
+  getWalletInfo = async () => {
+    const response = await getApiResource(`/userWalletInfo/${JSON.parse(localStorage.getItem("loginId"))}`)
+    setwalletInfo(response.data)
   }
 
   useEffect(() => {
@@ -59,29 +49,28 @@ const UserNavbar = () => {
     setcardInfo({ ...cardInfo })
   }
 
-  const verifyEmail = () => {
-    axios.post(`http://localhost:4000/codeswear/user/cardEmailVerify/${JSON.parse(localStorage.getItem("loginId"))}`, cardInfo, auth).then(response => {
-      if (response.data.success) {
-        setOtp(true)
-      }
-      else {
-        toast.error(response.data.message)
-      }
-    })
+  const verifyEmail = async () => {
+    const response = await postApiData(`/cardEmailVerify/${JSON.parse(localStorage.getItem("loginId"))}`, cardInfo)
+    if (response.success) {
+      setOtp(true)
+    }
+    else {
+      toast.error(response.message)
+    }
   }
 
-  const verifyOtp = () => {
-    axios.post(`http://localhost:4000/codeswear/user/addToWallet/${JSON.parse(localStorage.getItem("loginId"))}`, cardInfo, auth).then(response => {
-      if (response.data.success) {
-        setaddMoney(false)
-        setOtp(false)
-        toast.success(response.data.message)
-        getWalletInfo()
-      }
-      else {
-        toast.error(response.data.message)
-      }
-    })
+  const verifyOtp = async () => {
+    const response = await postApiData(`/addToWallet/${JSON.parse(localStorage.getItem("loginId"))}`, cardInfo)
+    if (response.success) {
+      setaddMoney(false)
+      setOtp(false)
+      toast.success(response.message)
+      getWalletInfo()
+    }
+    else {
+      toast.error(response.message)
+    }
+
   }
 
 

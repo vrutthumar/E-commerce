@@ -50,30 +50,42 @@ const AdminNavbar = () => {
         <Modal.Body>
           <div className='mx-auto' style={{ width: "90%" }}>
             {
-              walletInfo.transactions?.map((x) => {
-                return <div className="py-4 d-flex align-items-center justify-content-between">
-                  <div className='d-flex align-items-center'>
-                    <div className='me-2'>
-                      {
-                        x.type == "Credited" ? <FaArrowCircleRight color='green' size={30} /> : <FaArrowCircleLeft color='red' size={30} />
-                      }
-                    </div>
-                    <div>
-                      <p className='fw-bold'>{x.type}</p>
-                      <p>{x.message}</p>
-                    </div>
+              walletInfo.transactions == undefined
+                ?
+                <>
+                  <div className='text-center w-100'>
+                    <h5 className='flex items-center justify-center text-dark' >No transactions Found<img src="https://cdni.iconscout.com/illustration/premium/thumb/no-transaction-7359562-6024630.png" alt="" style={{ height: "100px", width: "100px" }} /></h5>
                   </div>
-                  <div className='text-center'>
-                    <p className='fw-bold' style={{ color: "#245ced" }}>₹ {x.amount}</p>
-                    <p>{moment(x.time).format('MMMM Do YYYY, h:mm:ss a')}</p>
+                </>
+                :
+                <>
+                  {
+                    walletInfo.transactions?.map((x) => {
+                      return <div className="py-4 d-flex align-items-center justify-content-between">
+                        <div className='d-flex align-items-center'>
+                          <div className='me-2'>
+                            {
+                              x.type == "Credited" ? <FaArrowCircleRight color='green' size={30} /> : <FaArrowCircleLeft color='red' size={30} />
+                            }
+                          </div>
+                          <div>
+                            <p className='fw-bold'>{x.type}</p>
+                            <p>{x.message}</p>
+                          </div>
+                        </div>
+                        <div className='text-center'>
+                          <p className='fw-bold' style={{ color: "#245ced" }}>₹ {x.amount}</p>
+                          <p>{moment(x.time).format('MMMM Do YYYY, h:mm:ss a')}</p>
+                        </div>
+                      </div>
+                    })
+                  }
+                  <div className='d-flex align-items-center justify-content-between'>
+                    <h5>Total Amount</h5>
+                    <h5>₹ {walletInfo.walletAmount ?? 0}</h5>
                   </div>
-                </div>
-              })
+                </>
             }
-            <div className='d-flex align-items-center justify-content-between'>
-              <h5>Total Amount</h5>
-              <h5>₹ {walletInfo.walletAmount ?? 0}</h5>
-            </div>
           </div>
 
 

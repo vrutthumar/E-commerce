@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import { Form } from 'react-bootstrap'
 import toast from 'react-hot-toast'
-import { Context } from '../App'
+import { Context } from '../../App'
 import { json, useNavigate } from 'react-router-dom'
 
 const ForgotPassword = () => {
@@ -80,7 +80,7 @@ const ForgotPassword = () => {
   const forgotPassword = (e) => {
     e.preventDefault();
     if (error == '') {
-      axios.post(`http://localhost:4000/codeswear/auth/forgotpassword`, forgotPasswordObj,auth).then(response => {
+      axios.post(`http://localhost:4000/codeswear/auth/forgotpassword`, forgotPasswordObj, auth).then(response => {
         if (response.data.success) {
           e.target.reset()
           navigate('/')
@@ -99,10 +99,10 @@ const ForgotPassword = () => {
     verifyEmailObj['role'] = role.role
     setverifyEmailObj({ ...verifyEmailObj })
     axios.post("http://localhost:4000/codeswear/auth/emailverify", verifyEmailObj).then(response => {
-      
+
       if (response.data.status) {
         enterOtp();
-        localStorage.setItem('token' ,JSON.stringify(response.data.token))
+        localStorage.setItem('token', JSON.stringify(response.data.token))
         toast.success(response.data.message)
       }
       else {
